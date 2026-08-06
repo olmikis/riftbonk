@@ -1,0 +1,462 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#050b09">
+  <title>RIFTBONK: Rift Survivors</title>
+  <link rel="stylesheet" href="styles.css?v=51">
+</head>
+<body>
+  <canvas id="game" aria-label="Игровая арена"></canvas>
+  <div class="vignette"></div>
+  <div id="damageFlash"></div>
+
+  <section id="menu" class="screen active">
+    <div class="menu-grid"></div>
+    <div id="menuShell" class="menu-shell menu-shell-v2" data-menu-direction="forward">
+      <article class="menu-page menu-home-page active" data-menu-page="home" aria-hidden="false">
+        <div class="menu-home-brand">
+          <div class="logo-wrap">
+            <div class="eyebrow">OFFLINE 3D SURVIVOR</div>
+            <h1><span>RIFT</span>BONK</h1>
+            <div class="subtitle">RIFT SURVIVORS</div>
+            <p class="pitch">Сломай билдом баланс раньше, чем Разлом сломает тебя.</p>
+          </div>
+          <div class="menu-home-stats">
+            <span id="bestTime">Рекорд: 00:00</span>
+            <span>5 оружий · 8 предметов</span>
+            <span>Автоатака · 30 минут хаоса</span>
+          </div>
+        </div>
+        <nav class="menu-home-actions" aria-label="Главное меню">
+          <button id="menuPlayBtn" class="menu-main-action primary" data-menu-go="mode" type="button"><span>01</span><div><b>ИГРАТЬ</b><small>Начать новый забег</small></div><i>→</i></button>
+          <button id="codexBtn" class="menu-main-action" type="button"><span>02</span><div><b>ЭНЦИКЛОПЕДИЯ</b><small>Герои, оружие, предметы и эволюции</small></div><i>↗</i></button>
+          <button id="menuSettingsBtn" class="menu-main-action" data-menu-go="settings" type="button"><span>03</span><div><b>НАСТРОЙКИ</b><small>Графика и отображение</small></div><i>→</i></button>
+        </nav>
+        <footer class="menu-home-footer"><span><b>WASD</b> движение</span><span><b>ЛКМ</b> захват цели</span><span><b>ESC</b> назад</span></footer>
+      </article>
+
+      <article class="menu-page menu-route-page" data-menu-page="mode" aria-hidden="true">
+        <header class="menu-route-head">
+          <button class="menu-back-btn" data-menu-back type="button">← <span>НАЗАД</span></button>
+          <div><span class="eyebrow">ШАГ 1 ИЗ 4</span><h2>ВЫБЕРИ ФОРМАТ ЗАБЕГА</h2><p>Темп меняет длительность и скорость всей временной шкалы.</p></div>
+          <div class="menu-progress"><i class="active"></i><i></i><i></i><i></i></div>
+        </header>
+        <div class="menu-route-options pace-select" role="radiogroup" aria-label="Продолжительность забега">
+          <button class="menu-route-card pace-option selected" data-pace="standard" data-menu-next="map" type="button"><span class="route-icon cyan">◷</span><div><small>КЛАССИЧЕСКИЙ ЗАБЕГ</small><b>30 МИНУТ</b><p>Полная кривая развития, пять основных боссов и переход в Бесконечный Разлом.</p><em>Стандартный опыт · события ×1</em></div><i>→</i></button>
+          <button class="menu-route-card pace-option rush" data-pace="rush" data-menu-next="map" type="button"><span class="route-icon amber">ϟ</span><div><small>УСКОРЕННЫЙ ЗАБЕГ</small><b>10 МИНУТ</b><p>Весь тридцатиминутный хаос сжат втрое. Быстрая прокачка и ранние боссы.</p><em>Опыт ×2 · события ×3</em></div><i>→</i></button>
+        </div>
+        <p class="menu-route-hint">Нажми на режим — сразу перейдёшь к выбору карты.</p>
+      </article>
+
+      <article class="menu-page menu-route-page" data-menu-page="map" aria-hidden="true">
+        <header class="menu-route-head">
+          <button class="menu-back-btn" data-menu-back type="button">← <span>НАЗАД</span></button>
+          <div><span class="eyebrow">ШАГ 2 ИЗ 4</span><h2>ВЫБЕРИ КАРТУ</h2><p>Геометрия карты полностью меняет движение и линии огня.</p></div>
+          <div class="menu-progress"><i class="active"></i><i class="active"></i><i></i><i></i></div>
+        </header>
+        <div class="menu-route-options map-select" role="radiogroup" aria-label="Выбор карты">
+          <button class="menu-route-card map-option selected" data-map="normal" data-menu-next="hero" type="button"><span class="route-icon cyan">◎</span><div><small>ОТКРЫТАЯ АРЕНА</small><b>ОБЫЧНАЯ</b><p>Текущая бесконечная арена без преград. Свободное движение и открытые линии атаки.</p><em>Классическая геометрия</em></div><i>→</i></button>
+          <button class="menu-route-card map-option obstacle-map" data-map="obstacles" data-menu-next="hero" type="button"><span class="route-icon violet">▦</span><div><small>ТАКТИЧЕСКАЯ АРЕНА</small><b>С ПРЕПЯТСТВИЯМИ</b><p>По seed размещаются стены и монолиты. Они блокируют героев, врагов и все снаряды.</p><em>Укрытия · узкие проходы · закрытый огонь</em></div><i>→</i></button>
+        </div>
+        <p class="menu-route-hint">Препятствия одинаковы для одного seed и не исчезают во время забега.</p>
+      </article>
+
+      <article class="menu-page menu-route-page" data-menu-page="hero" aria-hidden="true">
+        <header class="menu-route-head">
+          <button class="menu-back-btn" data-menu-back type="button">← <span>НАЗАД</span></button>
+          <div><span class="eyebrow">ШАГ 3 ИЗ 4</span><h2>ВЫБЕРИ ГЕРОЯ</h2><p>Герой задаёт стартовые характеристики, но не ограничивает будущий билд.</p></div>
+          <div class="menu-progress"><i class="active"></i><i class="active"></i><i class="active"></i><i></i></div>
+        </header>
+        <div class="hero-select menu-hero-select" role="radiogroup" aria-label="Выбор героя">
+          <button class="hero-card selected" data-hero="vanguard" data-menu-next="run" type="button">
+            <span class="hero-orb cyan">◆</span><span class="hero-copy"><strong>ВАНГАРД</strong><small>Сбалансированный</small></span><span>130 HP · +1 пробитие · +15 брони</span><i>→</i>
+          </button>
+          <button class="hero-card" data-hero="witch" data-menu-next="run" type="button">
+            <span class="hero-orb violet">✦</span><span class="hero-copy"><strong>ВЕДЬМА</strong><small>Стеклянная пушка</small></span><span>+35% урон · −25% здоровье</span><i>→</i>
+          </button>
+          <button class="hero-card" data-hero="runner" data-menu-next="run" type="button">
+            <span class="hero-orb amber">➤</span><span class="hero-copy"><strong>РАННЕР</strong><small>Скорость и крит</small></span><span>+20% скорость · +10% крит</span><i>→</i>
+          </button>
+          <button class="hero-card" data-hero="engineer" data-menu-next="run" type="button">
+            <span class="hero-orb amber">⬡</span><span class="hero-copy"><strong>ИНЖЕНЕР</strong><small>Техника и зоны</small></span><span>Дроны · турель каждые 20с · +25% длительности</span><i>→</i>
+          </button>
+          <button class="hero-card" data-hero="pyromancer" data-menu-next="run" type="button">
+            <span class="hero-orb red">♨</span><span class="hero-copy"><strong>ПИРОМАНТ</strong><small>Цепное горение</small></span><span>5 зарядов огня · взрывы · −20% неогненного урона</span><i>→</i>
+          </button>
+          <button class="hero-card" data-hero="necromancer" data-menu-next="run" type="button">
+            <span class="hero-orb violet">☠</span><span class="hero-copy"><strong>НЕКРОМАНТ</strong><small>Армия мертвецов</small></span><span>Каждые 25 убийств создают прислужника</span><i>→</i>
+          </button>
+          <button class="hero-card" data-hero="duelist" data-menu-next="run" type="button">
+            <span class="hero-orb white">⌖</span><span class="hero-copy"><strong>ДУЭЛЯНТ</strong><small>Ручной фокус</small></span><span>+35% по захваченной цели · награда за убийство</span><i>→</i>
+          </button>
+          <button class="hero-card" data-hero="chronomancer" data-menu-next="run" type="button">
+            <span class="hero-orb cyan">⌛</span><span class="hero-copy"><strong>ХРОНОМАНТ</strong><small>Контроль времени</small></span><span>Хроносфера · +18% темпа против замедленных</span><i>→</i>
+          </button>
+          <button class="hero-card" data-hero="berserker" data-menu-next="run" type="button">
+            <span class="hero-orb red">✺</span><span class="hero-copy"><strong>БЕРСЕРК</strong><small>Сила через боль</small></span><span>До +60% урона и +40% темпа · входящий урон +15%</span><i>→</i>
+          </button>
+          <button class="hero-card" data-hero="guardian" data-menu-next="run" type="button">
+            <span class="hero-orb cyan">▣</span><span class="hero-copy"><strong>СТРАЖ</strong><small>Щит и контрволна</small></span><span>2 заряда щита · малый хитбокс · медленнее</span><i>→</i>
+          </button>
+          <button class="hero-card" data-hero="voidwalker" data-menu-next="run" type="button">
+            <span class="hero-orb violet">●</span><span class="hero-copy"><strong>ПУСТОТНИК</strong><small>Властелин зон</small></span><span>+25% урона в гравитации · убийства сокращают КД</span><i>→</i>
+          </button>
+          <button class="hero-card" data-hero="gambler" data-menu-next="run" type="button">
+            <span class="hero-orb amber">◆</span><span class="hero-copy"><strong>АЗАРТНИК</strong><small>Случайный забег</small></span><span>Случайное оружие · редкие выборы · бонус и проклятие</span><i>→</i>
+          </button>
+          <button class="hero-card" data-hero="cursed" data-menu-next="run" type="button">
+            <span class="hero-orb pink">♛</span><span class="hero-copy"><strong>ПРОКЛЯТЫЙ</strong><small>Реликвия за риск</small></span><span>Босс-реликвия сразу · усиленные враги · 4 выбора</span><i>→</i>
+          </button>
+          <button class="hero-card" data-hero="riftwalker" data-menu-next="run" type="button">
+            <span class="hero-orb green">╾</span><span class="hero-copy"><strong>СКИТАЛЕЦ РАЗЛОМА</strong><small>Мастер геометрии</small></span><span>+18% урона и +12% скорости возле препятствий</span><i>→</i>
+          </button>
+          <button class="hero-card" data-hero="mimic" data-menu-next="run" type="button">
+            <span class="hero-orb white">◈</span><span class="hero-copy"><strong>МИМИК</strong><small>Кража атак</small></span><span>Собственная атака · копирует элит · только 4 оружия</span><i>→</i>
+          </button>
+        </div>
+        <p class="menu-route-hint">Нажми на героя — перейдёшь к финальным параметрам.</p>
+      </article>
+
+      <article class="menu-page menu-run-page" data-menu-page="run" aria-hidden="true">
+        <header class="menu-route-head">
+          <button class="menu-back-btn" data-menu-back type="button">← <span>НАЗАД</span></button>
+          <div><span class="eyebrow">ШАГ 4 ИЗ 4</span><h2>НАСТРОЙ РАЗЛОМ</h2><p>Последняя проверка перед началом забега.</p></div>
+          <div class="menu-progress"><i class="active"></i><i class="active"></i><i class="active"></i><i class="active"></i></div>
+        </header>
+        <div class="menu-run-layout">
+          <div class="menu-run-controls">
+            <section class="menu-control-section">
+              <span>СЛОЖНОСТЬ</span>
+              <div class="mode-select difficulty-select" role="radiogroup" aria-label="Сложность забега">
+                <button class="menu-option difficulty-option selected" data-difficulty="normal" type="button"><b>ОБЫЧНАЯ</b><small>Стандартные правила</small></button>
+                <button class="menu-option difficulty-option hardcore" data-difficulty="hardcore" type="button"><b>ХАРДКОР</b><small>Только 1 HP</small></button>
+                <button class="menu-option difficulty-option custom" data-difficulty="custom" type="button"><b>КАСТОМНАЯ</b><small>Тонкая настройка</small></button>
+              </div>
+            </section>
+            <section class="menu-control-section">
+              <span>ИСПЫТАНИЕ И SEED</span>
+              <div class="challenge-config">
+                <label><span>ИСПЫТАНИЕ</span><select id="challengeSelect" aria-label="Испытание забега">
+                  <option value="classic">Классический Разлом</option>
+                  <option value="inferno">Огненный обет</option>
+                  <option value="elite">Элитный натиск</option>
+                  <option value="ascended">Вознесённый арсенал</option>
+                  <option value="bossrush">Парад титанов</option>
+                </select></label>
+                <label class="seed-field"><span>SEED-КОД</span><input id="runSeedInput" maxlength="8" spellcheck="false" autocomplete="off" aria-label="Seed-код забега"><button id="randomSeedBtn" type="button" title="Новый случайный seed">↻</button></label>
+                <small id="challengeDesc">Обычные правила · seed фиксирует ключевые события</small>
+              </div>
+            </section>
+          </div>
+          <aside class="menu-run-summary">
+            <span>ТЕКУЩИЙ ЗАБЕГ</span>
+            <div><small>ГЕРОЙ</small><b id="menuSummaryHero">ВАНГАРД</b></div>
+            <div><small>ФОРМАТ</small><b id="menuSummaryPace">30 МИНУТ</b></div>
+            <div><small>КАРТА</small><b id="menuSummaryMap">ОБЫЧНАЯ</b></div>
+            <div><small>СЛОЖНОСТЬ</small><b id="menuSummaryDifficulty">ОБЫЧНАЯ</b></div>
+            <div><small>ГРАФИКА</small><b id="menuSummaryGraphics">ОБЫЧНАЯ</b></div>
+            <button id="startBtn" class="primary-btn" type="button"><span>НАЧАТЬ ЗАБЕГ</span><kbd>ENTER</kbd></button>
+          </aside>
+        </div>
+      </article>
+
+      <article class="menu-page menu-settings-page" data-menu-page="settings" aria-hidden="true">
+        <header class="menu-route-head">
+          <button class="menu-back-btn" data-menu-back type="button">← <span>НАЗАД</span></button>
+          <div><span class="eyebrow">ПАРАМЕТРЫ ИГРЫ</span><h2>НАСТРОЙКИ</h2><p>Применяются сразу и сохраняются в браузере.</p></div>
+        </header>
+        <section class="menu-settings-section">
+          <span>КАЧЕСТВО ГРАФИКИ</span>
+          <div class="menu-route-options graphics-select" role="radiogroup" aria-label="Качество графики">
+            <button class="menu-route-card graphics-option selected" data-graphics="normal" type="button"><span class="route-icon cyan">◇</span><div><small>THREE.JS · PERFORMANCE</small><b>ОБЫЧНАЯ</b><p>Освещение, emissive-эффекты, лёгкий bloom и атмосферные частицы — без динамических теней.</p></div></button>
+            <button class="menu-route-card graphics-option rtx" data-graphics="rtx" type="button"><span class="route-icon violet">✦</span><div><small>THREE.JS · ULTRA</small><b>RTX EDITION</b><p>VSM-тени 512², shader-эффекты оружия, HDR bloom и металлические материалы.</p></div></button>
+          </div>
+        </section>
+        <div class="menu-settings-note"><b>УПРАВЛЕНИЕ</b><span>WASD — движение</span><span>ЛКМ — захват цели</span><span>ПКМ — автоматическая цель</span><span>~ — тестовая консоль</span></div>
+      </article>
+    </div>
+  </section>
+
+  <section id="coopModal" class="overlay coop-modal hidden" aria-modal="true" role="dialog" aria-labelledby="coopTitle">
+    <div class="coop-box">
+      <button id="coopCloseBtn" class="custom-close coop-close" type="button" aria-label="Закрыть">×</button>
+      <span class="eyebrow">ДВА КОМПЬЮТЕРА · ОДНА СЕТЬ</span>
+      <h2 id="coopTitle">ЛОКАЛЬНЫЙ КООПЕРАТИВ</h2>
+      <p>На первом компьютере запустите <b>COOP.bat</b>. Второй игрок открывает показанный в окне сервера адрес и вводит код комнаты.</p>
+      <label class="coop-name"><span>ИМЯ ИГРОКА</span><input id="coopName" maxlength="24" value="Игрок" autocomplete="nickname"></label>
+      <div id="coopActions" class="coop-actions">
+        <button id="coopHostBtn" class="primary-btn" type="button">СОЗДАТЬ КОМНАТУ</button>
+        <div class="coop-join-row"><input id="coopRoomInput" inputmode="numeric" maxlength="6" placeholder="КОД"><button id="coopJoinBtn" class="ghost-btn" type="button">ПОДКЛЮЧИТЬСЯ</button></div>
+      </div>
+      <div id="coopLobby" class="coop-lobby hidden">
+        <span>КОД КОМНАТЫ</span><strong id="coopRoomCode">----</strong>
+        <p id="coopAddress">Ожидание адреса сервера…</p>
+        <div id="coopPlayers" class="coop-players"><span>1. Хост</span><span class="waiting">2. Ожидание игрока…</span></div>
+        <button id="coopStartBtn" class="primary-btn" type="button" disabled>НАЧАТЬ СОВМЕСТНЫЙ ЗАБЕГ</button>
+      </div>
+      <div id="coopStatus" class="coop-status">Сервер не подключён</div>
+    </div>
+  </section>
+
+  <section id="customDifficultyModal" class="overlay custom-difficulty hidden" aria-modal="true" role="dialog" aria-labelledby="customDifficultyTitle">
+    <div class="custom-box">
+      <div class="custom-head">
+        <div><span class="eyebrow">КОНСТРУКТОР РАЗЛОМА</span><h2 id="customDifficultyTitle">КАСТОМНАЯ СЛОЖНОСТЬ</h2></div>
+        <button id="customCloseBtn" class="custom-close" type="button" aria-label="Закрыть">×</button>
+      </div>
+      <p class="custom-intro">Настройки применяются к следующему забегу. Значения выше 100% усиливают соответствующую механику.</p>
+      <div class="custom-grid">
+        <label class="custom-control"><span><b>Здоровье врагов</b><output data-output="health">100%</output></span><small>Базовый запас HP всех противников</small><input data-custom="health" type="range" min="25" max="400" step="5" value="100"></label>
+        <label class="custom-control"><span><b>Урон врагов</b><output data-output="damage">100%</output></span><small>Контактный урон и вражеские снаряды</small><input data-custom="damage" type="range" min="25" max="300" step="5" value="100"></label>
+        <label class="custom-control"><span><b>Скорость врагов</b><output data-output="speed">100%</output></span><small>Передвижение, преследование и рывки</small><input data-custom="speed" type="range" min="50" max="180" step="5" value="100"></label>
+        <label class="custom-control"><span><b>Количество врагов</b><output data-output="spawn">100%</output></span><small>Постоянная скорость появления</small><input data-custom="spawn" type="range" min="25" max="300" step="5" value="100"></label>
+        <label class="custom-control"><span><b>Сила скейлинга</b><output data-output="scaling">100%</output></span><small>Рост характеристик от времени и угрозы</small><input data-custom="scaling" type="range" min="25" max="250" step="5" value="100"></label>
+        <label class="custom-control"><span><b>Темп угрозы</b><output data-output="threatRate">100%</output></span><small>Скорость повышения уровня угрозы</small><input data-custom="threatRate" type="range" min="50" max="200" step="5" value="100"></label>
+        <label class="custom-control"><span><b>Частота элит</b><output data-output="elite">100%</output></span><small>Вероятность элитных модификаторов</small><input data-custom="elite" type="range" min="0" max="300" step="10" value="100"></label>
+        <label class="custom-control"><span><b>Здоровье боссов</b><output data-output="bossHealth">100%</output></span><small>Основные боссы и Стражи Разлома</small><input data-custom="bossHealth" type="range" min="25" max="500" step="5" value="100"></label>
+        <label class="custom-control"><span><b>Копии боссов</b><output data-output="bossCopies">×1</output></span><small>Количество каждого босса до тотемов</small><input data-custom="bossCopies" type="range" min="1" max="5" step="1" value="1"></label>
+        <label class="custom-control"><span><b>Размер орд</b><output data-output="hordeSize">100%</output></span><small>Число врагов в случайных и рубежных ордах</small><input data-custom="hordeSize" type="range" min="25" max="300" step="5" value="100"></label>
+        <label class="custom-control"><span><b>Интервал орд</b><output data-output="hordeInterval">100%</output></span><small>50% — орды вдвое чаще, 200% — вдвое реже</small><input data-custom="hordeInterval" type="range" min="50" max="200" step="5" value="100"></label>
+        <label class="custom-control"><span><b>Критический Разлом</b><output data-output="rift">100%</output></span><small>Сила скейлинга после первой трети забега</small><input data-custom="rift" type="range" min="0" max="200" step="5" value="100"></label>
+      </div>
+      <div class="custom-actions">
+        <button id="customResetBtn" class="ghost-btn" type="button">СБРОСИТЬ</button>
+        <button id="customCancelBtn" class="ghost-btn" type="button">ОТМЕНА</button>
+        <button id="customApplyBtn" class="primary-btn" type="button">ПРИМЕНИТЬ</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="codexModal" class="overlay codex-modal hidden" aria-modal="true" role="dialog" aria-labelledby="codexTitle">
+    <div class="codex-box">
+      <header class="codex-head">
+        <div><span class="eyebrow">АРХИВ РАЗЛОМА</span><h2 id="codexTitle">ЭНЦИКЛОПЕДИЯ РАЗЛОМА</h2><p id="codexSummary">15 героев · 20 оружий · 68 предметов · 20 эволюций</p></div>
+        <button id="codexCloseBtn" class="custom-close" type="button" aria-label="Закрыть энциклопедию">×</button>
+      </header>
+      <div class="codex-toolbar">
+        <div class="codex-tabs" role="tablist" aria-label="Раздел энциклопедии">
+          <button class="codex-tab" data-codex-tab="heroes" type="button" role="tab">ГЕРОИ <b id="codexHeroesCount">15</b></button>
+          <button class="codex-tab selected" data-codex-tab="weapons" type="button" role="tab">ОРУЖИЕ <b id="codexWeaponsCount">20</b></button>
+          <button class="codex-tab" data-codex-tab="items" type="button" role="tab">ПРЕДМЕТЫ <b id="codexItemsCount">68</b></button>
+          <button class="codex-tab" data-codex-tab="evolutions" type="button" role="tab">ЭВОЛЮЦИИ <b id="codexEvolutionsCount">20</b></button>
+        </div>
+        <label class="codex-search"><span>⌕</span><input id="codexSearch" type="search" autocomplete="off" spellcheck="false" placeholder="Найти по названию, эффекту или характеристике…" aria-label="Поиск по энциклопедии"></label>
+      </div>
+      <div class="codex-layout">
+        <nav id="codexList" class="codex-list" aria-label="Список записей энциклопедии"></nav>
+        <article id="codexDetail" class="codex-detail" aria-live="polite"></article>
+      </div>
+    </div>
+  </section>
+
+  <main id="hud" class="hidden" aria-live="polite">
+    <div id="combatTextLayer" class="combat-text-layer" aria-hidden="true"></div>
+    <div id="arenaZoneHud" class="arena-zone-hud"><span>СЕКТОР РАЗЛОМА</span><b id="arenaZoneName">ОБСИДИАНОВЫЙ ХРАМ</b><em id="graphicsRendererStatus">THREE · NORMAL · LIGHTING · BLOOM</em></div>
+    <div class="topbar">
+      <div class="bar-panel health-panel">
+        <div class="bar-label"><span>ЗДОРОВЬЕ</span><b id="hpText">100 / 100</b></div>
+        <div class="bar-track"><div id="hpBar" class="bar-fill hp"></div></div>
+      </div>
+      <div class="timer-panel">
+        <div id="timer">00:00</div>
+        <span id="threat">УГРОЗА I</span>
+      </div>
+      <div class="bar-panel xp-panel">
+        <div class="bar-label"><span id="levelText">УРОВЕНЬ 1</span><b id="xpText">0 / 8</b></div>
+        <div class="bar-track"><div id="xpBar" class="bar-fill xp"></div></div>
+      </div>
+    </div>
+
+    <div class="left-hud">
+      <div class="stat"><span>⚔</span><div><small>СИЛА</small><b id="damageStat">×1.00</b></div></div>
+      <div class="stat"><span>ϟ</span><div><small>ТЕМП</small><b id="rateStat">1.0×</b></div></div>
+      <div class="stat"><span>☠</span><div><small>УБИЙСТВА</small><b id="killStat">0</b></div></div>
+    </div>
+
+    <div id="difficultyHud" class="difficulty-hud">
+      <div class="difficulty-title">СТАТЫ ВРАГОВ · УГРОЗА <b id="threatBadge">I</b></div>
+      <div class="difficulty-grid">
+        <span>☷ СПАВН <b id="spawnDifficulty">2.1/с</b></span>
+        <span>♥ ЗДОРОВЬЕ <b id="healthDifficulty">×1.00</b></span>
+        <span>⚔ УРОН <b id="damageDifficulty">×1.00</b></span>
+        <span>➟ СКОРОСТЬ <b id="speedDifficulty">×1.00</b></span>
+        <span>♛ БОССЫ <b id="bossDifficulty">×1</b></span>
+        <span class="horde-clock">☠ ОРДА <b id="hordeTimer">--:--</b></span>
+      </div>
+      <div class="adaptive-line"><span>⚖ АДАПТАЦИЯ</span><b id="adaptiveDifficulty">НЕЙТРАЛЬНО</b><small id="expectedLevel">ОЖИД. УР. 1</small></div>
+      <div class="totem-line"><span>АКТИВНЫЕ ТОТЕМЫ</span><b id="totemCount">0</b><div id="totemSlots" class="totem-slots"></div></div>
+    </div>
+
+    <div id="bossWrap" class="boss-wrap hidden">
+      <div class="boss-name">РАЗРЫВАТЕЛЬ БЕЗДНЫ</div>
+      <div class="boss-track"><div id="bossBar"></div></div>
+    </div>
+
+    <div id="targetLockHud" class="target-lock-hud hidden">
+      <span>ЗАХВАТ ЦЕЛИ</span><b id="targetLockName">ПРОТИВНИК</b><small id="targetLockHp">0 / 0 HP · ПКМ — АВТОРЕЖИМ</small>
+      <div><i id="targetLockBar"></i></div>
+    </div>
+
+    <div id="hordeBanner" class="horde-banner hidden">
+      <span>МАССОВОЕ НАШЕСТВИЕ</span>
+      <strong>ОРДА</strong>
+      <small id="hordeCount">100 ВРАГОВ В ПУТИ</small>
+    </div>
+
+    <div id="coopPeerHud" class="coop-peer-hud hidden">
+      <span id="coopPeerName">ИГРОК 2</span><b id="coopPeerHp">100 / 100</b>
+      <div><i id="coopPeerHpBar"></i></div><small id="coopPeerLevel">УРОВЕНЬ 1</small>
+    </div>
+
+    <aside id="coopChoicePanel" class="coop-choice-panel hidden">
+      <span id="coopChoiceKicker">НОВЫЙ УРОВЕНЬ</span>
+      <strong>ВЫБЕРИ УСИЛЕНИЕ</strong>
+      <div id="coopChoiceCards" class="coop-choice-cards"></div>
+      <div id="coopChoiceActions" class="choice-actions compact hidden">
+        <button data-choice-action="reroll" type="button">↻ 3</button><button data-choice-action="banish" type="button">⊘ 3</button><button data-choice-action="hold" type="button">▣ 2</button><button data-choice-action="blood" type="button">♥−20%</button>
+      </div>
+      <small>КЛАВИШИ 1 · 2 · 3</small>
+    </aside>
+
+    <div id="firstPersonHud" class="first-person-hud hidden" aria-hidden="true">
+      <div class="first-person-reticle" aria-hidden="true"></div>
+      <span>ПЕРВОЕ ЛИЦО · V — СМЕНИТЬ ВИД</span>
+    </div>
+
+    <div class="bottom-hud">
+      <div id="weaponSlots" class="weapon-slots"></div>
+      <div id="itemSlots" class="item-slots"></div>
+      <div id="relicSlots" class="relic-slots"></div>
+    </div>
+    <div id="buffBar" class="buff-bar"></div>
+    <div id="toastStack" class="toast-stack"></div>
+    <div class="controls-hint">WASD / СТРЕЛКИ — ДВИЖЕНИЕ <i></i> ЛКМ — ЗАХВАТ ЦЕЛИ <i></i> ПКМ — АВТОПРИЦЕЛ <i></i> TAB — БИЛД / ПАУЗА <i></i> ESC — ПАУЗА</div>
+  </main>
+
+  <section id="buildInspector" class="build-inspector hidden" aria-label="Пауза и текущий билд">
+    <div class="build-inspector-box">
+      <header><div><span>ПАУЗА · АНАЛИЗ БИЛДА</span><h2>ТЕКУЩИЙ БИЛД</h2><p id="inspectorRun">КЛАССИЧЕСКИЙ РАЗЛОМ · SEED —</p></div><button id="buildInspectorClose" type="button" aria-label="Закрыть">×</button></header>
+      <div class="build-inspector-grid">
+        <section><h3>КАК СЧИТАЕТСЯ УРОН</h3><div id="buildFormula" class="formula-stack"></div></section>
+        <section><h3>ЖИВЫЕ ПОКАЗАТЕЛИ</h3><div id="buildLiveStats" class="live-stat-grid"></div></section>
+      </div>
+      <section class="build-inventory">
+        <div class="build-inventory-head">
+          <div><span>ТЕКУЩЕЕ СНАРЯЖЕНИЕ</span><h3>ОРУЖИЕ И ПРЕДМЕТЫ</h3></div>
+          <small>Наведи курсор или выбери карточку, чтобы увидеть точный эффект.</small>
+        </div>
+        <div class="build-inventory-layout">
+          <div class="build-inventory-groups">
+            <section>
+              <h4>ОРУЖИЕ <b id="inspectorWeaponCount">0 / 5</b></h4>
+              <div id="inspectorWeaponList" class="build-inventory-list"></div>
+            </section>
+            <section>
+              <h4>ПРЕДМЕТЫ <b id="inspectorItemCount">0 / 8</b></h4>
+              <div id="inspectorItemList" class="build-inventory-list"></div>
+            </section>
+            <section id="inspectorSpecialGroup" class="hidden">
+              <h4>ЭВОЛЮЦИИ И БОСС-РЕЛИКВИИ</h4>
+              <div id="inspectorSpecialList" class="build-inventory-list compact"></div>
+            </section>
+          </div>
+          <aside id="inspectorInventoryDetail" class="build-inventory-detail">
+            <div class="build-inventory-placeholder">Выбери элемент текущего билда.</div>
+          </aside>
+        </div>
+      </section>
+      <section id="weaponTelemetryPanel" class="weapon-telemetry hidden"><h3>УРОН ОРУЖИЯ · ПОСЛЕДНИЕ 10 СЕКУНД</h3><div id="inspectorWeapons"></div></section>
+      <footer>TAB / ESC — закрыть · игра остановлена</footer>
+    </div>
+  </section>
+
+  <section id="choiceScreen" class="overlay hidden">
+    <div class="choice-head">
+      <span id="choiceKicker">НОВЫЙ УРОВЕНЬ</span>
+      <h2 id="choiceTitle">ВЫБЕРИ УСИЛЕНИЕ</h2>
+      <p id="choiceSubtitle">Время остановлено. Собери невозможную комбинацию.</p>
+    </div>
+    <div id="choiceCards" class="choice-cards"></div>
+    <div id="choiceActions" class="choice-actions hidden">
+      <button data-choice-action="reroll" type="button">ПЕРЕБРОС · 3</button>
+      <button data-choice-action="banish" type="button">ИЗГНАТЬ · 3</button>
+      <button data-choice-action="hold" type="button">СОХРАНИТЬ · 2</button>
+      <button data-choice-action="blood" type="button">ЕЩЁ ВЫБОР ЗА 20% HP</button>
+    </div>
+    <div class="choice-hint">Нажми <b>1</b>, <b>2</b> или <b>3</b></div>
+  </section>
+
+  <section id="pauseScreen" class="overlay hidden">
+    <div class="pause-box">
+      <span class="eyebrow">РАЗРЫВ ЗАМОРОЖЕН</span>
+      <h2>ПАУЗА</h2>
+      <div class="pause-render-scale">
+        <div>
+          <span>РАЗРЕШЕНИЕ РЕНДЕРИНГА</span>
+          <b id="renderScaleValue">80%</b>
+        </div>
+        <input id="renderScaleInput" type="range" min="50" max="100" step="5" value="80" aria-label="Разрешение рендеринга">
+        <small>Меньше — выше производительность. Интерфейс остаётся в полном разрешении.</small>
+      </div>
+      <button id="resumeBtn" class="primary-btn" type="button">ПРОДОЛЖИТЬ</button>
+      <button id="codexBtnPause" class="ghost-btn pause-codex-btn" type="button">ЭНЦИКЛОПЕДИЯ РАЗЛОМА</button>
+      <button id="restartBtnPause" class="ghost-btn" type="button">НАЧАТЬ ЗАНОВО</button>
+      <button id="menuBtnPause" class="ghost-btn" type="button">В ГЛАВНОЕ МЕНЮ</button>
+    </div>
+  </section>
+
+  <section id="endScreen" class="overlay hidden">
+    <div class="end-box">
+      <span id="endKicker" class="eyebrow">ЗАБЕГ ОКОНЧЕН</span>
+      <h2 id="endTitle">БЕЗДНА ПОГЛОТИЛА ТЕБЯ</h2>
+      <p id="endSubtitle">Но билд уже начал ломать реальность.</p>
+      <div class="end-stats">
+        <div><span id="endTime">00:00</span><small>ВРЕМЯ</small></div>
+        <div><span id="endKills">0</span><small>УБИЙСТВА</small></div>
+        <div><span id="endLevel">1</span><small>УРОВЕНЬ</small></div>
+        <div><span id="endDamage">0</span><small>УРОН</small></div>
+      </div>
+      <div class="end-detail-stats">
+        <span id="endDpsStat" class="hidden"><small>ЛУЧШИЙ DPS</small><b id="endBestDps">0</b></span>
+        <span><small>КРИТЫ</small><b id="endCrits">0</b></span>
+        <span><small>ЛЕЧЕНИЕ</small><b id="endHealing">0</b></span>
+        <span><small>ЗАБЛОКИРОВАНО</small><b id="endBlocked">0</b></span>
+      </div>
+      <div class="end-panels">
+        <section><h3>УРОН БИЛДА</h3><div id="damageBreakdown" class="damage-breakdown"></div></section>
+        <section><h3>РЕКОРДЫ БЕСКОНЕЧНОГО РАЗЛОМА</h3><div id="endlessRecords" class="endless-records"></div></section>
+      </div>
+      <section id="balanceLab" class="balance-lab hidden">
+        <header>
+          <div><span>ЛАБОРАТОРИЯ БАЛАНСА</span><h3>ДИАГНОСТИКА ЗАБЕГА</h3><p>Уровень, DPS, давление врагов и адаптация по всей временной шкале.</p></div>
+          <div class="balance-export-actions">
+            <button id="downloadBalancePng" class="ghost-btn" type="button">СКАЧАТЬ ГРАФИКИ PNG</button>
+            <button id="downloadBalanceJson" class="ghost-btn" type="button">СКАЧАТЬ ДАННЫЕ JSON</button>
+          </div>
+        </header>
+        <canvas id="balanceReportCanvas" width="1200" height="820" aria-label="Графики баланса завершённого забега"></canvas>
+        <div id="balanceFindings" class="balance-findings"></div>
+        <small>Для разбора баланса отправь PNG вместе с JSON — в JSON сохранены точные срезы, билд, настройки сложности и события боссов.</small>
+      </section>
+      <div id="buildSummary" class="build-summary"></div>
+      <button id="continueEndlessBtn" class="primary-btn endless-btn hidden" type="button">ВОЙТИ В БЕСКОНЕЧНЫЙ РАЗЛОМ</button>
+      <button id="restartBtn" class="primary-btn" type="button">ЕЩЁ ОДИН ЗАБЕГ</button>
+      <button id="menuBtnEnd" class="ghost-btn" type="button">СМЕНИТЬ ГЕРОЯ</button>
+    </div>
+  </section>
+
+  <section id="devConsole" class="dev-console hidden" aria-label="Консоль тестирования">
+    <header><b>RIFTBONK // DEV CONSOLE</b><span>~ закрыть · help справка</span></header>
+    <div id="devConsoleLog" class="dev-console-log" aria-live="polite"></div>
+    <form id="devConsoleForm" autocomplete="off"><label for="devConsoleInput">&gt;</label><input id="devConsoleInput" type="text" spellcheck="false" autocomplete="off" placeholder="help"></form>
+  </section>
+
+  <div id="mobileStick" class="mobile-stick"><div></div></div>
+  <script>(()=>{const bridge={hadExports:Object.prototype.hasOwnProperty.call(window,'exports'),hadModule:Object.prototype.hasOwnProperty.call(window,'module'),exports:window.exports,module:window.module},threeExports={};window.__threeCjsBridge=bridge;window.exports=threeExports;window.module={exports:threeExports};})();</script>
+  <script src="vendor/three.cjs?v=1851"></script>
+  <script>(()=>{const bridge=window.__threeCjsBridge;window.THREE=window.module?.exports||window.exports;if(bridge?.hadExports)window.exports=bridge.exports;else delete window.exports;if(bridge?.hadModule)window.module=bridge.module;else delete window.module;delete window.__threeCjsBridge;})();</script>
+  <script src="game.js?v=100"></script>
+</body>
+</html>
