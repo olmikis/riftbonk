@@ -37,7 +37,7 @@
   try{const storedRenderScale=localStorage.getItem('riftRenderScale'),savedRenderScale=Number(storedRenderScale);if(storedRenderScale!==null&&Number.isFinite(savedRenderScale))renderScale=clamp(savedRenderScale,RENDER_SCALE_MIN,RENDER_SCALE_MAX);}catch(_error){}
   const RUN_PACES = {
     standard:{duration:1800,timelineScale:1,xpPace:1.05},
-    rush:{duration:600,timelineScale:3,xpPace:2}
+    rush:{duration:600,timelineScale:3,xpPace:2.5}
   };
   function xpNeedForLevel(level){
     if(level<=1)return 8;
