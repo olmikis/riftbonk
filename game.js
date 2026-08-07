@@ -25,6 +25,7 @@
   const ENEMY_HEALTH_TIME_EXPONENT = 1.2;
   const ENEMY_DAMAGE_SCALING_RATE = .5;
   const ENEMY_SPAWN_SCALING_RATE = .82;
+  const ENEMY_ELITE_SPAWN_RATE = .65;
   const LATE_BOSS_MAX_HEALTH_SCALE = 3.8;
   const SEISMIC_EDGE_DAMAGE_MULTIPLIER = .5;
   const VOID_PRESSURE_TICK_INTERVAL = .45;
@@ -1487,7 +1488,7 @@
   function spawnEnemy(type=pickEnemyType(),boss=false,allowElite=true) {
     const a=gameRandom()*TAU,d=type==='burrower'?rand(13,9):rand(35,26),base=ENEMY_TYPES[type];
     const late=post15Scales(),growth=enemyGrowth(),scaling=growth.health*late.health;
-    const phase=lateGamePhase(),timeline=runTimelineTime(),adaptive=state.adaptive||{health:1,damage:1,speed:1,eliteBonus:0},lateElite=phase===2?.10+clamp((timeline-1200)/600,0,1)*.08:phase===1?.055:Math.min(.012,timeline/50000),eliteChance=Math.min(.4,(lateElite+(adaptive.eliteBonus||0))*(state.difficulty.elite??1));
+    const phase=lateGamePhase(),timeline=runTimelineTime(),adaptive=state.adaptive||{health:1,damage:1,speed:1,eliteBonus:0},lateElite=phase===2?.10+clamp((timeline-1200)/600,0,1)*.08:phase===1?.055:Math.min(.012,timeline/50000),eliteChance=Math.min(.4,(lateElite+(adaptive.eliteBonus||0))*(state.difficulty.elite??1)*ENEMY_ELITE_SPAWN_RATE);
     const elite=!boss&&allowElite&&(state.challenge==='elite'||gameRandom()<eliteChance),affix=elite?ELITE_AFFIXES[Math.floor(gameRandom()*ELITE_AFFIXES.length)]:null;
     const difficulty=state.difficulty;
     let hp=base.hp*scaling*(elite?3.5:1)*(boss?55*(difficulty.bossHealth??1):1)*difficulty.health*(adaptive.health||1),size=base.size*(elite?1.38:1)*(boss?2.45:1);
