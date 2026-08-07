@@ -22,8 +22,9 @@
   const SPAWN_THREAT_BANK_CAP = 300;
   const BOSS_SINGLE_HIT_CAP = .42;
   const BOSS_DAMAGE_SOFT_CAP = .085, MINIBOSS_DAMAGE_SOFT_CAP = .12;
-  const ENEMY_HEALTH_TIME_EXPONENT = 1.22;
+  const ENEMY_HEALTH_TIME_EXPONENT = 1.2;
   const ENEMY_DAMAGE_SCALING_RATE = .5;
+  const ENEMY_SPAWN_SCALING_RATE = .82;
   const LATE_BOSS_MAX_HEALTH_SCALE = 3.8;
   const SEISMIC_EDGE_DAMAGE_MULTIPLIER = .5;
   const VOID_PRESSURE_TICK_INTERVAL = .45;
@@ -476,21 +477,21 @@
   const THREAT_NAMES=['I','II','III','IV','V','VI','VII','VIII','IX','X','XI','XII','XIII','XIV','XV','XVI','XVII','XVIII','XIX','XX','XXI','XXII','XXIII','XXIV','XXV','XXVI','XXVII','XXVIII','XXIX','XXX'];
   const threatLabel=tier=>THREAT_NAMES[tier]||`Ω-${Math.max(1,tier-29)}`;
   const HEROES = {
-    vanguard:{name:'ВАНГАРД',color:COLORS.cyan,maxHp:130,speed:7.2,armor:15,damage:1,crit:.05,pierce:2,starter:'blaster'},
-    witch:{name:'ВЕДЬМА',color:COLORS.violet,maxHp:82,speed:7,armor:0,damage:1.35,crit:.08,pierce:1,starter:'blaster'},
-    runner:{name:'РАННЕР',color:COLORS.amber,maxHp:105,speed:8.8,armor:5,damage:1,crit:.15,pierce:1,starter:'blaster'},
-    engineer:{name:'ИНЖЕНЕР',color:COLORS.amber,maxHp:110,speed:6.8,armor:12,damage:.85,crit:.05,pierce:1,duration:1.25,starter:'drone'},
-    pyromancer:{name:'ПИРОМАНТ',color:COLORS.red,maxHp:96,speed:7.1,armor:3,damage:1.08,crit:.06,pierce:1,starter:'firetrail'},
-    necromancer:{name:'НЕКРОМАНТ',color:COLORS.violet,maxHp:92,speed:6.9,armor:4,damage:.95,crit:.06,pierce:1,starter:'nanoswarm'},
-    duelist:{name:'ДУЭЛЯНТ',color:COLORS.white,maxHp:104,speed:7.6,armor:6,damage:1,crit:.12,pierce:1,starter:'boomerang'},
-    chronomancer:{name:'ХРОНОМАНТ',color:COLORS.cyan,maxHp:94,speed:7.2,armor:4,damage:.85,crit:.08,pierce:1,starter:'chrononeedles'},
-    berserker:{name:'БЕРСЕРК',color:COLORS.red,maxHp:145,speed:7.4,armor:0,damage:1,crit:.08,pierce:1,starter:'saw'},
-    guardian:{name:'СТРАЖ',color:COLORS.cyan,maxHp:165,speed:6.1,armor:28,damage:.9,crit:.04,pierce:1,starter:'aura'},
-    voidwalker:{name:'ПУСТОТНИК',color:COLORS.violet,maxHp:102,speed:7,armor:8,damage:1,crit:.06,pierce:1,projSpeed:.75,starter:'gravity'},
-    gambler:{name:'АЗАРТНИК',color:COLORS.amber,maxHp:100,speed:7.4,armor:5,damage:1,crit:.1,pierce:1,randomStarter:true},
-    cursed:{name:'ПРОКЛЯТЫЙ',color:COLORS.pink,maxHp:112,speed:7.2,armor:8,damage:1.08,crit:.08,pierce:1,starter:'blaster'},
-    riftwalker:{name:'СКИТАЛЕЦ РАЗЛОМА',color:COLORS.green,maxHp:106,speed:7.5,armor:8,damage:1,crit:.08,pierce:1,starter:'riftlance'},
-    mimic:{name:'МИМИК',color:COLORS.white,maxHp:118,speed:7.2,armor:10,damage:1,crit:.08,pierce:1,weaponSlots:4}
+    vanguard:{name:'ВАНГАРД',color:COLORS.cyan,maxHp:130,speed:7.2,armor:15,damage:1.1,crit:.05,pierce:2,starter:'blaster'},
+    witch:{name:'ВЕДЬМА',color:COLORS.violet,maxHp:82,speed:7,armor:0,damage:1.45,crit:.08,pierce:1,starter:'blaster'},
+    runner:{name:'РАННЕР',color:COLORS.amber,maxHp:105,speed:8.8,armor:5,damage:1.1,crit:.15,pierce:1,starter:'blaster'},
+    engineer:{name:'ИНЖЕНЕР',color:COLORS.amber,maxHp:110,speed:6.8,armor:12,damage:1.05,crit:.05,pierce:1,duration:1.25,starter:'drone'},
+    pyromancer:{name:'ПИРОМАНТ',color:COLORS.red,maxHp:96,speed:7.1,armor:3,damage:1.18,crit:.06,pierce:1,starter:'firetrail'},
+    necromancer:{name:'НЕКРОМАНТ',color:COLORS.violet,maxHp:92,speed:6.9,armor:4,damage:1.05,crit:.06,pierce:1,starter:'nanoswarm'},
+    duelist:{name:'ДУЭЛЯНТ',color:COLORS.white,maxHp:104,speed:7.6,armor:6,damage:1.1,crit:.12,pierce:1,starter:'boomerang'},
+    chronomancer:{name:'ХРОНОМАНТ',color:COLORS.cyan,maxHp:94,speed:7.2,armor:4,damage:.95,crit:.08,pierce:1,starter:'chrononeedles'},
+    berserker:{name:'БЕРСЕРК',color:COLORS.red,maxHp:145,speed:7.4,armor:0,damage:1.1,crit:.08,pierce:1,starter:'saw'},
+    guardian:{name:'СТРАЖ',color:COLORS.cyan,maxHp:165,speed:6.1,armor:28,damage:1,crit:.04,pierce:1,starter:'aura'},
+    voidwalker:{name:'ПУСТОТНИК',color:COLORS.violet,maxHp:102,speed:7,armor:8,damage:1.1,crit:.06,pierce:1,projSpeed:.75,starter:'gravity'},
+    gambler:{name:'АЗАРТНИК',color:COLORS.amber,maxHp:100,speed:7.4,armor:5,damage:1.1,crit:.1,pierce:1,randomStarter:true},
+    cursed:{name:'ПРОКЛЯТЫЙ',color:COLORS.pink,maxHp:112,speed:7.2,armor:8,damage:1.18,crit:.08,pierce:1,starter:'blaster'},
+    riftwalker:{name:'СКИТАЛЕЦ РАЗЛОМА',color:COLORS.green,maxHp:106,speed:7.5,armor:8,damage:1.1,crit:.08,pierce:1,starter:'riftlance'},
+    mimic:{name:'МИМИК',color:COLORS.white,maxHp:118,speed:7.2,armor:10,damage:1.1,crit:.08,pierce:1,weaponSlots:4}
   };
   const HERO_BASE_DAMAGE_MULTIPLIER=1.15;
   const CODEX_HEROES = {
@@ -1428,12 +1429,12 @@
   function enemyTimeSpeed(time=state.time) { const t=runTimelineTime(time),power=state.difficulty?.scaling??1,endlessAge=Math.max(0,t-1800);return 1+(Math.min(.5,t/3600)+endlessAge/2400)*power; }
   function enemyGrowth(time=state.time,tier=state.threatTier) {
     const t=runTimelineTime(time),power=state.difficulty?.scaling??1,endlessAge=Math.max(0,t-1800),endlessHealth=(1+endlessAge/180)**1.8,endlessDamage=1+endlessAge/300,rawHealth=(1+t/150)**ENEMY_HEALTH_TIME_EXPONENT*(1+tier*.14)*endlessHealth,rawDamage=(1+t/600)*(1+tier*.045)*endlessDamage;
-    return{health:1+(rawHealth-1)*power,damage:1+(rawDamage-1)*power*ENEMY_DAMAGE_SCALING_RATE,speed:(1+tier*.008*power)*enemyTimeSpeed(time),spawn:2+(t/135+tier*.65+endlessAge/22)*power};
+    return{health:1+(rawHealth-1)*power,damage:1+(rawDamage-1)*power*ENEMY_DAMAGE_SCALING_RATE,speed:(1+tier*.008*power)*enemyTimeSpeed(time),spawn:2+(t/135+tier*.65+endlessAge/22)*power*ENEMY_SPAWN_SCALING_RATE};
   }
   function post15Scales(time=state.time) {
     const t=runTimelineTime(time);if(t<600)return{health:1,damage:1,spawn:1,speed:1};
     const strength=state.difficulty?.rift??1,from=t<900?{health:1,damage:1,spawn:1,speed:1}:t<1200?{health:1.65,damage:1.25,spawn:1.35,speed:1.08}:{health:2.5,damage:1.6,spawn:1.75,speed:1.15},to=t<900?{health:1.65,damage:1.25,spawn:1.35,speed:1.08}:t<1200?{health:2.5,damage:1.6,spawn:1.75,speed:1.15}:{health:4.2,damage:2.15,spawn:2.3,speed:1.27},ramp=t<900?(t-600)/300:t<1200?(t-900)/300:clamp((t-1200)/600,0,1),scaled={};
-    for(const key of ['health','damage','spawn','speed'])scaled[key]=1+(lerp(from[key],to[key],ramp)-1)*strength*(key==='damage'?ENEMY_DAMAGE_SCALING_RATE:1);
+    for(const key of ['health','damage','spawn','speed'])scaled[key]=1+(lerp(from[key],to[key],ramp)-1)*strength*(key==='damage'?ENEMY_DAMAGE_SCALING_RATE:key==='spawn'?ENEMY_SPAWN_SCALING_RATE:1);
     return scaled;
   }
   function scheduledBossTimes(){return CHALLENGES[state.challenge]?.bossRush?[180,480,780,1080,1380,1680]:[300,900,1500];}
