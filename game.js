@@ -1444,6 +1444,8 @@
     {id:'vampiric',name:'ВАМПИРИЧЕСКИЙ',color:[1,.08,.23,1]},
     {id:'volatile',name:'ВЗРЫВАЮЩИЙСЯ',color:[.58,.25,1,1]}
   ];
+  const VOLATILE_AFFIX_CHANCE=.25*.35,NON_VOLATILE_ELITE_AFFIXES=ELITE_AFFIXES.filter(affix=>affix.id!=='volatile'),VOLATILE_ELITE_AFFIX=ELITE_AFFIXES.find(affix=>affix.id==='volatile');
+  function pickEliteAffix(){const roll=gameRandom();if(roll<VOLATILE_AFFIX_CHANCE)return VOLATILE_ELITE_AFFIX;return NON_VOLATILE_ELITE_AFFIXES[Math.min(NON_VOLATILE_ELITE_AFFIXES.length-1,Math.floor((roll-VOLATILE_AFFIX_CHANCE)/(1-VOLATILE_AFFIX_CHANCE)*NON_VOLATILE_ELITE_AFFIXES.length))];}
   const NET_ENEMY_TYPES=Object.keys(ENEMY_TYPES),NET_AFFIXES=ELITE_AFFIXES.map(affix=>affix.id),NET_BOSS_KINDS=Object.keys(BOSS_ARCHETYPES);
   const NET_COLORS=[COLORS.cyan,COLORS.violet,COLORS.amber,COLORS.green,COLORS.white,COLORS.red,COLORS.pink];
   const NET_PROJECTILE_KINDS=['','saw','drone','boomerang','needle','nanite','reflected','shard'],NET_ZONE_KINDS=['pulse','frost','meteor','gravity','firetrail','blast','storm','riftScar','mine','mortar','seismic','katana','enemyWarning','enemyBlast','enemyTrap'];
@@ -1519,7 +1521,7 @@
     const a=gameRandom()*TAU,d=type==='burrower'?rand(13,9):rand(35,26),base=ENEMY_TYPES[type];
     const late=post15Scales(),growth=enemyGrowth(),scaling=growth.health*late.health;
     const phase=lateGamePhase(),timeline=runTimelineTime(),adaptive=state.adaptive||{health:1,damage:1,speed:1,eliteBonus:0},lateElite=phase===2?.10+clamp((timeline-1200)/600,0,1)*.08:phase===1?.055:Math.min(.012,timeline/50000),eliteChance=Math.min(.4,(lateElite+(adaptive.eliteBonus||0))*(state.difficulty.elite??1)*ENEMY_ELITE_SPAWN_RATE);
-    const elite=!boss&&allowElite&&(state.challenge==='elite'||gameRandom()<eliteChance),affix=elite?ELITE_AFFIXES[Math.floor(gameRandom()*ELITE_AFFIXES.length)]:null;
+    const elite=!boss&&allowElite&&(state.challenge==='elite'||gameRandom()<eliteChance),affix=elite?pickEliteAffix():null;
     const difficulty=state.difficulty;
     let hp=base.hp*scaling*(elite?3.5:1)*(boss?55*(difficulty.bossHealth??1):1)*difficulty.health*(adaptive.health||1),size=base.size*(elite?1.38:1)*(boss?2.45:1);
     if(affix?.id==='armored')hp*=1.35;if(elite&&(state.stats?.gildedLure||coopActors.some(actor=>actor.connected&&actor.stats?.gildedLure)))hp*=1.08;
@@ -1601,7 +1603,7 @@
   function summonBossReinforcements(boss,phase) {
     const swarm=boss.bossKind==='swarmking',lateExtra=Math.floor(clamp((runTimelineTime()-600)/900,0,1)*4),count=(phase===1?6:8)+(swarm?6:0)+lateExtra,types=swarm?['swarm','swarm','runner','splitter']:boss.bossKind==='architect'?['warden','absorber','shooter']:runTimelineTime()>=480?['runner','charger','phaser','burrower','warden']:['runner','brute','charger'];
     for(let i=0;i<count;i++){
-      const minion=spawnEnemy(types[i%types.length],false,false),affix=ELITE_AFFIXES[(i+phase)%ELITE_AFFIXES.length],a=i/count*TAU+boss.seed,d=rand(7,4);
+      const minion=spawnEnemy(types[i%types.length],false,false),affix=pickEliteAffix(),a=i/count*TAU+boss.seed,d=rand(7,4);
       placeEnemy(minion,boss.x+Math.cos(a)*d,boss.z+Math.sin(a)*d);minion.elite=true;minion.affix=affix.id;minion.affixName=affix.name;minion.affixColor=affix.color;minion.hp*=2.2;minion.maxHp=minion.hp;minion.damage*=1.25;minion.size*=1.12;minion.xp*=4;
     }
     burst(boss.x,boss.z,COLORS.red,22,1.25);toast(`<b>ФАЗА БОССА ${phase}</b> · элитная свита вошла в бой`,'#ff3f68');shake=1.05;audio.tone(72,.55,'sawtooth',.055);
