@@ -40,7 +40,7 @@
   try{const storedRenderScale=localStorage.getItem('riftRenderScale'),savedRenderScale=Number(storedRenderScale);if(storedRenderScale!==null&&Number.isFinite(savedRenderScale))renderScale=clamp(savedRenderScale,RENDER_SCALE_MIN,RENDER_SCALE_MAX);}catch(_error){}
   const RUN_PACES = {
     standard:{duration:1800,timelineScale:1,xpPace:1.05},
-    rush:{duration:600,timelineScale:3,xpPace:2.5}
+    rush:{duration:600,timelineScale:3,xpPace:3}
   };
   function xpNeedForLevel(level){
     if(level<=1)return 8;
@@ -825,7 +825,7 @@
     {id:'resonance',name:'Резонансный колокол',icon:'♢',type:'ОРУЖИЕ',rarity:'rare',max:8,when:()=>state.stats.level>=5,level:()=>state.weapons.resonance,desc:()=>state.weapons.resonance?'Импульс становится шире и сильнее; серия растёт до десяти зарядов.':'Каждый импульс усиливает следующий, а получение урона сбрасывает половину зарядов.',apply:()=>state.weapons.resonance++},
     {id:'katana',name:'Катана',icon:'刃',type:'ОРУЖИЕ',rarity:'epic',max:8,when:()=>state.stats.level>=6,level:()=>state.weapons.katana,desc:()=>state.weapons.katana?'Удар становится сильнее, шире, дальше и быстрее.':'Молниеносный шейдерный взмах рассекает дугой всех врагов перед героем.',apply:()=>state.weapons.katana++},
     {id:'flamethrower',name:'Огнемёт',icon:'♨',type:'ОРУЖИЕ',rarity:'epic',max:8,when:()=>state.stats.level>=5,level:()=>state.weapons.flamethrower,desc:()=>state.weapons.flamethrower?'Струя становится длиннее, шире, сильнее и оставляет более опасное горение.':'Непрерывно поливает огнём сектор по направлению взгляда и поджигает врагов.',apply:()=>state.weapons.flamethrower++},
-    {id:'power',name:'Неприличная сила',icon:'⚔',type:'ХАРАКТЕРИСТИКА',rarity:'common',max:10,desc:()=>'+18% базового урона героя за ранг. Бонус складывается аддитивно.',apply:()=>state.stats.damageMult+=state.stats.baseDamage*.18},
+    {id:'power',name:'Неприличная сила',icon:'⚔',type:'ХАРАКТЕРИСТИКА',rarity:'common',max:10,desc:()=>'+20% базового урона героя за ранг. Бонус складывается аддитивно.',apply:()=>state.stats.damageMult+=state.stats.baseDamage*.20},
     {id:'haste',name:'Перегрузка',icon:'»',type:'ХАРАКТЕРИСТИКА',rarity:'common',max:10,desc:()=>'+12% скорости всех автоматических атак.',apply:()=>state.stats.fireRate*=1.12},
     {id:'multishot',name:'Двойная ставка',icon:'Ψ',type:'ХАРАКТЕРИСТИКА',rarity:'epic',max:5,desc:()=>'+1 снаряд обычному оружию и +1 полноценный Орбитальный клинок. Тяжёлые дополнительные снаряды наносят 50% урона; лучи и молнии получают ослабленные дополнительные цели.',apply:()=>state.stats.projectiles++},
     {id:'crit',name:'Заточка вероятности',icon:'◇',type:'ХАРАКТЕРИСТИКА',rarity:'common',max:8,desc:()=>'+8% шанс критического удара и +12% крит-урона.',apply:()=>{state.stats.crit+=.08;state.stats.critMult+=.12}},
@@ -1500,14 +1500,14 @@
     while(balance.samples.length>5000)balance.samples.shift();balance.lastKills=kills;balance.lastDamageTaken=damageTaken;balance.lastHealing=healing;balance.lastX=player.x;balance.lastZ=player.z;balance.sampleClock+=BALANCE_SAMPLE_INTERVAL;balance.sampleElapsed=0;balance.fpsTotal=0;balance.fpsFrames=0;
   }
   function pickEnemyType() {
-    const t=runTimelineTime(),phase=lateGamePhase(),antiStatic=t>=360&&((player.stationaryTime||0)>=2.5||state.adaptive?.dominant),pool=[['grunt',phase===2?24:36],['runner',t>100?(phase===2?18:22):0],['brute',t>300?(phase===2?18:15):0],['swarm',t>480?(phase===2?10:14):0],['titan',t>720?(phase===2?10:7):0]];
+    const t=runTimelineTime(),phase=lateGamePhase(),antiStatic=t>=360&&((player.stationaryTime||0)>=2.5||state.adaptive?.dominant),pool=[['grunt',phase===2?24:36],['runner',t>100?(phase===2?18:22):0],['brute',t>300?(phase===2?15.3:12.75):0],['swarm',t>480?(phase===2?10:14):0],['titan',t>720?(phase===2?8.5:5.95):0]];
     if(t>=600)pool.push(['charger',phase===2?16:8]);
-    if(t>=660)pool.push(['shooter',phase===2?5.25:2.625]);
+    if(t>=660)pool.push(['shooter',phase===2?3.4125:1.70625]);
     if(t>=720)pool.push(['warden',phase===2?14:6]);
-    if(t>=780)pool.push(['splitter',phase===2?16:7]);
+    if(t>=780)pool.push(['splitter',phase===2?13.6:5.95]);
     if(t>=360)pool.push(['burrower',(phase===2?12:6)*(antiStatic?1.6:1)]);
     if(t>=420)pool.push(['phaser',(phase===2?11:6)*(antiStatic?1.5:1)]);
-    if(t>=450)pool.push(['standard',(phase===2?8:4)*(antiStatic?1.4:1)]);
+    if(t>=450)pool.push(['standard',(phase===2?4:2)*(antiStatic?1.4:1)]);
     if(t>=480)pool.push(['absorber',(phase===2?8:4)*(antiStatic?1.35:1)]);
     let roll=gameRandom()*pool.reduce((sum,[,weight])=>sum+weight,0);
     for(const [type,weight] of pool){roll-=weight;if(roll<=0)return type;}
