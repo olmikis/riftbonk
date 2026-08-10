@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#050b09">
   <title>RIFTBONK: Rift Survivors</title>
-  <link rel="stylesheet" href="styles.css?v=51">
+  <link rel="stylesheet" href="styles.css?v=52">
 </head>
 <body>
   <canvas id="game" aria-label="Игровая арена"></canvas>
@@ -59,6 +59,7 @@
         <div class="menu-route-options map-select" role="radiogroup" aria-label="Выбор карты">
           <button class="menu-route-card map-option selected" data-map="normal" data-menu-next="hero" type="button"><span class="route-icon cyan">◎</span><div><small>ОТКРЫТАЯ АРЕНА</small><b>ОБЫЧНАЯ</b><p>Текущая бесконечная арена без преград. Свободное движение и открытые линии атаки.</p><em>Классическая геометрия</em></div><i>→</i></button>
           <button class="menu-route-card map-option obstacle-map" data-map="obstacles" data-menu-next="hero" type="button"><span class="route-icon violet">▦</span><div><small>ТАКТИЧЕСКАЯ АРЕНА</small><b>С ПРЕПЯТСТВИЯМИ</b><p>По seed размещаются стены и монолиты. Они блокируют героев, врагов и все снаряды.</p><em>Укрытия · узкие проходы · закрытый огонь</em></div><i>→</i></button>
+          <button class="menu-route-card map-option maze-map" data-map="maze" data-menu-next="hero" type="button"><span class="route-icon amber">⌗</span><div><small>ЗАПУТАННЫЙ КОМПЛЕКС</small><b>ЛАБИРИНТ</b><p>Связная сеть тесных коридоров и тупиков. Стены меняют маршруты врагов и перекрывают огонь.</p><em>Узкие коридоры · безопасный спавн</em></div><i>→</i></button>
         </div>
         <p class="menu-route-hint">Препятствия одинаковы для одного seed и не исчезают во время забега.</p>
       </article>
@@ -457,6 +458,6 @@
   <script>(()=>{const bridge={hadExports:Object.prototype.hasOwnProperty.call(window,'exports'),hadModule:Object.prototype.hasOwnProperty.call(window,'module'),exports:window.exports,module:window.module},threeExports={};window.__threeCjsBridge=bridge;window.exports=threeExports;window.module={exports:threeExports};})();</script>
   <script src="vendor/three.cjs?v=1851"></script>
   <script>(()=>{const bridge=window.__threeCjsBridge;window.THREE=window.module?.exports||window.exports;if(bridge?.hadExports)window.exports=bridge.exports;else delete window.exports;if(bridge?.hadModule)window.module=bridge.module;else delete window.module;delete window.__threeCjsBridge;})();</script>
-  <script src="game.js?v=109"></script>
+  <script src="game.js?v=110"></script>
 </body>
 </html>
