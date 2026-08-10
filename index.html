@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#050b09">
   <title>RIFTBONK: Rift Survivors</title>
-  <link rel="stylesheet" href="styles.css?v=52">
+  <link rel="stylesheet" href="styles.css?v=53">
 </head>
 <body>
   <canvas id="game" aria-label="Игровая арена"></canvas>
@@ -168,13 +168,25 @@
           <button class="menu-back-btn" data-menu-back type="button">← <span>НАЗАД</span></button>
           <div><span class="eyebrow">ПАРАМЕТРЫ ИГРЫ</span><h2>НАСТРОЙКИ</h2><p>Применяются сразу и сохраняются в браузере.</p></div>
         </header>
-        <section class="menu-settings-section">
-          <span>КАЧЕСТВО ГРАФИКИ</span>
-          <div class="menu-route-options graphics-select" role="radiogroup" aria-label="Качество графики">
-            <button class="menu-route-card graphics-option selected" data-graphics="normal" type="button"><span class="route-icon cyan">◇</span><div><small>THREE.JS · PERFORMANCE</small><b>ОБЫЧНАЯ</b><p>Освещение, emissive-эффекты, лёгкий bloom и атмосферные частицы — без динамических теней.</p></div></button>
-            <button class="menu-route-card graphics-option rtx" data-graphics="rtx" type="button"><span class="route-icon violet">✦</span><div><small>THREE.JS · ULTRA</small><b>RTX EDITION</b><p>VSM-тени 512², shader-эффекты оружия, HDR bloom и металлические материалы.</p></div></button>
-          </div>
-        </section>
+        <div class="menu-settings-body">
+          <section class="menu-settings-section">
+            <span>КАЧЕСТВО ГРАФИКИ</span>
+            <div class="menu-route-options graphics-select" role="radiogroup" aria-label="Качество графики">
+              <button class="menu-route-card graphics-option selected" data-graphics="normal" type="button"><span class="route-icon cyan">◇</span><div><small>THREE.JS · PERFORMANCE</small><b>ОБЫЧНАЯ</b><p>Освещение, emissive-эффекты, лёгкий bloom и атмосферные частицы — без динамических теней.</p></div></button>
+              <button class="menu-route-card graphics-option rtx" data-graphics="rtx" type="button"><span class="route-icon violet">✦</span><div><small>THREE.JS · ULTRA</small><b>RTX EDITION</b><p>VSM-тени 512², shader-эффекты оружия, HDR bloom и металлические материалы.</p></div></button>
+            </div>
+          </section>
+          <section class="menu-settings-section combat-numbers-settings">
+            <span>БОЕВОЙ ИНТЕРФЕЙС</span>
+            <div class="settings-toggle-card">
+              <div class="settings-toggle-copy"><b>ВСПЛЫВАЮЩИЕ ЦИФРЫ</b><p>Показывать урон, лечение и заблокированный урон над персонажами.</p></div>
+              <div class="settings-toggle-actions" role="group" aria-label="Всплывающие цифры урона и лечения">
+                <button class="combat-numbers-option selected" data-combat-numbers="on" type="button" aria-pressed="true">ВКЛ</button>
+                <button class="combat-numbers-option" data-combat-numbers="off" type="button" aria-pressed="false">ВЫКЛ</button>
+              </div>
+            </div>
+          </section>
+        </div>
         <div class="menu-settings-note"><b>УПРАВЛЕНИЕ</b><span>WASD — движение</span><span>ЛКМ — захват цели</span><span>ПКМ — автоматическая цель</span><span>~ — тестовая консоль</span></div>
       </article>
     </div>
@@ -458,6 +470,6 @@
   <script>(()=>{const bridge={hadExports:Object.prototype.hasOwnProperty.call(window,'exports'),hadModule:Object.prototype.hasOwnProperty.call(window,'module'),exports:window.exports,module:window.module},threeExports={};window.__threeCjsBridge=bridge;window.exports=threeExports;window.module={exports:threeExports};})();</script>
   <script src="vendor/three.cjs?v=1851"></script>
   <script>(()=>{const bridge=window.__threeCjsBridge;window.THREE=window.module?.exports||window.exports;if(bridge?.hadExports)window.exports=bridge.exports;else delete window.exports;if(bridge?.hadModule)window.module=bridge.module;else delete window.module;delete window.__threeCjsBridge;})();</script>
-  <script src="game.js?v=110"></script>
+  <script src="game.js?v=111"></script>
 </body>
 </html>
