@@ -1418,9 +1418,9 @@
   const ENEMY_TYPES = {
     grunt:{hp:22,speed:2.45,damage:10,size:.85,color:[.85,.12,.28,1],xp:1},
     runner:{hp:15,speed:4.2,damage:8,size:.62,color:[1,.42,.12,1],xp:1},
-    brute:{hp:95,speed:1.55,damage:19,size:1.32,color:[.55,.12,.78,1],xp:4},
+    brute:{hp:95,speed:1.55,damage:9.5,size:1.32,color:[.55,.12,.78,1],xp:4},
     swarm:{hp:9,speed:3.25,damage:6,size:.43,color:[.95,.18,.58,1],xp:1},
-    titan:{hp:290,speed:1.25,damage:30,size:1.75,color:[.2,.75,.66,1],xp:12},
+    titan:{hp:290,speed:1.25,damage:15,size:1.75,color:[.2,.75,.66,1],xp:12},
     charger:{hp:30,speed:2.7,damage:16,size:.76,color:[1,.3,.08,1],xp:2},
     shooter:{hp:38,speed:2.05,damage:13,size:.76,color:[.42,.2,1,1],xp:2},
     warden:{hp:135,speed:1.42,damage:21,size:1.25,color:[.14,.55,.92,1],xp:5},
@@ -1724,7 +1724,7 @@
       if(s.pursuitMark&&!NON_RECURSIVE_SOURCES.has(source)){if(s.pursuitTarget!==e.nid){s.pursuitTarget=e.nid;s.pursuitTime=0;}dmg*=1+Math.min(.2,(s.pursuitTime||0)*.04*s.pursuitMark);}}
     if(riftwalkerActive()&&canCrit)crit=true;if(crit)dmg*=s.critMult;
     if(s.execute&&!bossLike&&e.hp/e.maxHp<=s.execute)dmg=e.hp+1;
-    if(e.type==='phaser'){const target=closestActor(e);if(target&&dist2(e,target.entity)>5.5**2)dmg*=.22;}
+    if(e.type==='phaser'){const target=closestActor(e);if(target&&dist2(e,target.entity)>5.5**2)dmg*=.35;}
     if(!bossLike&&e.type!=='standard'&&activeStandards.some(standard=>!standard.dead&&dist2(e,standard)<8.2**2))dmg*=.72;
     if(e.affix==='armored')dmg*=.62;
     if(e.shieldHits>0&&dmg>e.maxHp*.08){e.shieldHits--;dmg=Math.min(dmg,e.maxHp*.08);burst(e.x,e.z,[.45,.72,1,1],7,.65);}if(bossLike){const softCap=e.maxHp*(e.boss?BOSS_DAMAGE_SOFT_CAP:MINIBOSS_DAMAGE_SOFT_CAP);dmg=softCap*(1-Math.exp(-dmg/Math.max(1,softCap)));}
