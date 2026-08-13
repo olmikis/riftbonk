@@ -34,7 +34,7 @@
           <button id="codexBtn" class="menu-main-action" type="button"><span>02</span><div><b>ЭНЦИКЛОПЕДИЯ</b><small>Герои, оружие, предметы и эволюции</small></div><i>↗</i></button>
           <button id="menuSettingsBtn" class="menu-main-action" data-menu-go="settings" type="button"><span>03</span><div><b>НАСТРОЙКИ</b><small>Графика и отображение</small></div><i>→</i></button>
         </nav>
-        <footer class="menu-home-footer"><span><b>WASD</b> движение</span><span><b>ЛКМ</b> захват цели</span><span><b>ESC</b> назад</span></footer>
+        <footer class="menu-home-footer"><span><b>WASD</b> движение</span><span><b>ПРОБЕЛ</b> прыжок</span><span><b>ЛКМ</b> захват цели</span><span><b>ESC</b> назад</span></footer>
       </article>
 
       <article class="menu-page menu-route-page" data-menu-page="mode" aria-hidden="true">
@@ -187,7 +187,7 @@
             </div>
           </section>
         </div>
-        <div class="menu-settings-note"><b>УПРАВЛЕНИЕ</b><span>WASD — движение</span><span>ЛКМ — захват цели</span><span>ПКМ — автоматическая цель</span><span>~ — тестовая консоль</span></div>
+        <div class="menu-settings-note"><b>УПРАВЛЕНИЕ</b><span>WASD — движение</span><span>Пробел — прыжок; повторные нажатия — bunnyhop</span><span>ЛКМ — захват цели</span><span>ПКМ — автоматическая цель</span><span>~ — тестовая консоль</span></div>
       </article>
     </div>
   </section>
@@ -345,7 +345,7 @@
     </div>
     <div id="buffBar" class="buff-bar"></div>
     <div id="toastStack" class="toast-stack"></div>
-    <div class="controls-hint">WASD / СТРЕЛКИ — ДВИЖЕНИЕ <i></i> ЛКМ — ЗАХВАТ ЦЕЛИ <i></i> ПКМ — АВТОПРИЦЕЛ <i></i> TAB — БИЛД / ПАУЗА <i></i> ESC — ПАУЗА</div>
+    <div class="controls-hint">WASD / СТРЕЛКИ — ДВИЖЕНИЕ <i></i> ПРОБЕЛ — ПРЫЖОК, ПОВТОР — BUNNYHOP <i></i> ЛКМ — ЗАХВАТ ЦЕЛИ <i></i> ПКМ — АВТОПРИЦЕЛ <i></i> TAB — БИЛД / ПАУЗА <i></i> ESC — ПАУЗА</div>
   </main>
 
   <section id="buildInspector" class="build-inspector hidden" aria-label="Пауза и текущий билд">
@@ -412,6 +412,14 @@
         </div>
         <input id="renderScaleInput" type="range" min="50" max="100" step="5" value="80" aria-label="Разрешение рендеринга">
         <small>Меньше — выше производительность. Интерфейс остаётся в полном разрешении.</small>
+      </div>
+      <div class="pause-render-scale pause-attack-opacity">
+        <div>
+          <span>НЕПРОЗРАЧНОСТЬ АТАК</span>
+          <b id="attackOpacityValue">100%</b>
+        </div>
+        <input id="attackOpacityInput" type="range" min="10" max="100" step="5" value="100" aria-label="Непрозрачность атак игрока">
+        <small>Меньше — атаки прозрачнее и меньше закрывают врагов.</small>
       </div>
       <button id="resumeBtn" class="primary-btn" type="button">ПРОДОЛЖИТЬ</button>
       <button id="codexBtnPause" class="ghost-btn pause-codex-btn" type="button">ЭНЦИКЛОПЕДИЯ РАЗЛОМА</button>
